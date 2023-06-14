@@ -1278,8 +1278,13 @@ display: none;
     .toggle-menu {
     position: absolute;
     right: 0;
-    top:10%;
-    background-color: $grey;
+    top: 9%;
+  
+    // @media (max-width:768px) {
+    //     top:10%;
+    //     }
+    
+    background-color: transparent;
 
    //background: transparent;
    // color: $light-gray;

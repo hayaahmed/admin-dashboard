@@ -1,7 +1,7 @@
 <template>
-  <div class="newhome">
-  
-    <div class="title ">
+  <div class="newhome bg-gray-100">
+  <sideBarVue></sideBarVue>
+    <div class="Crudtitle ">
   <h1 class=" text-gray-700 text-left m-3 ml-10 font-normal">{{ dashbourdcrud }}</h1> 
  </div>
  <div class="addEmp">
@@ -89,8 +89,8 @@
 
    
     <!-- table List -->
-    <section id="tables">
-    <div  class="thetable fix-width scroll-inner">
+   <!-- fix-width scroll-inner-->
+    <div  class="thetable">
     <table class="table">
     <thead>
         <!-- row -->
@@ -117,7 +117,6 @@
     </tbody>
  </table>
 </div>
-</section>
 </div>
 
   </div>
@@ -125,8 +124,11 @@
 <script>
 import axios from 'axios';
 import swal from 'sweetalert2';
+import sideBarVue from './sideBar.vue';
+import {mapActions} from 'vuex'
 export default {
-    name:'homeCrud',
+    name:'CrudDashboard',
+    components:{sideBarVue},
     data(){
         return{
             dashbourdcrud:"Employees CRUD Dashboard",
@@ -156,6 +158,7 @@ export default {
         }
     },
     methods:{
+      ...mapActions(['redirectto']),
       async  addemployee(){
         //check if input is empty before submit
         if (!this.empname) {
@@ -232,7 +235,7 @@ export default {
             //get 5 rows of data ,select firstName ,lastName,age form fake api https://dummyjson.com
             await axios.get('https://dummyjson.com/users?limit=5&select=firstName,lastName,age,gender,birthDate,email').then(({data:mydata})=>{
                     let res = mydata.users;
-                    console.log(res);
+                    // console.log(res);
                   this.data=res;
                   });            
 
@@ -281,7 +284,10 @@ export default {
             swal.fire("employee updated successfully");   
              this.showEditPopUp=false;
         }
-    }
+    },
+       goto(routed){
+            this.redirectto({val:routed});
+           }
     },
     created(){
        this.getemps();
@@ -311,8 +317,12 @@ export default {
 <style lang="scss">
 @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,400&family=Open+Sans&display=swap');@import url('https://fonts.googleapis.com/css2?family=Lora:ital@1&family=Open+Sans&display=swap');
 $main-color:#5F9EA0;
+$grey:white;
 $blue: rgb(2 132 199);
-$light-gray:rgb(244, 245, 247);
+$dark-blue:rgb(3 105 161);
+$light-gray:rgb(229 231 235);
+$dark-gray:rgb(156 163 175);
+$text-dark-color:rgb(55 65 81 );
 *{
   box-sizing: border-box;
   margin: 0;
@@ -341,21 +351,44 @@ $light-gray:rgb(244, 245, 247);
       
     } 
 .newhome{
-  margin: 40px 30px;
-    height: 100vh;
-    @media (max-width:800px) {
+
+ 
+    // height: 100vh;
+    position: relative;
+    top: -12px;
+    left:40px;
+    /* @media (max-width:800px) {
       height: fit-content;
       
-    }
-    background-color: $light-gray;
-    position: relative;
-    .title{
+    } */
+  
+    .Crudtitle{
+   
+    padding: 50px;
         text-transform: capitalize;
         color: #605f5f;
         font-family: 'Lora', serif;
         // letter-spacing: 1px;
         font-size: 22px;
         line-height: 1.2;
+        h1{
+          position:relative;
+          &::before,&::after{
+          position:absolute;
+          content: "";
+          height: 3px;
+          bottom: -10px;
+          left: 0;
+          }
+          &::before{
+            background-color: white;
+            width: 150px;
+          }
+          &::after{
+            background-color: black;
+            width: 60px;
+          }
+        }
 
         @media (max-width:800px) {
         font-size: 16px;
@@ -382,6 +415,7 @@ $light-gray:rgb(244, 245, 247);
     }
  }
 .dashboard{
+  // margin: 20px auto;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -404,7 +438,8 @@ $light-gray:rgb(244, 245, 247);
     }
 
 .myform{
-    margin-top:100px ;
+    margin-top:200px ;
+    //margin top change
     background-color:white ;
     padding: 30px;
     border-radius: 5px;
@@ -506,19 +541,27 @@ $light-gray:rgb(244, 245, 247);
     
 }
 .thetable{
-   margin-top: 40px;
-   margin-bottom: 40px;
+   margin: 40px auto;
+border-radius: 5px;
     width: 100%;
+  @media (min-width: 1100px) {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+    //new addations
+    overflow-x: auto;
+
+
+
   &.scroll{
     animation:fadeUp 0.5s linear;
   }
-    @media (max-width:800px) {
+  //new comment
+    /* @media (max-width:800px) {
       width: 320px;
           
-     }
+     } */
 
     
 //     &.fix-width {
@@ -532,14 +575,21 @@ $light-gray:rgb(244, 245, 247);
 //}
           
     .table{
-  width: 100%;
+  /* width: 100%; */
+  //new addations
+  min-width: 1000px;
+  @media (max-width:900px) {
+min-width: 1400px;
+    }
     border-collapse: separate;
     // box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
   border-spacing: 0 10px;
     text-align: center;
     border-radius: 5px;
-
-     @media (max-width:800px) {
+    font-size: 16px;
+    padding-top: 0;
+      //new comment
+     /* @media (max-width:800px) {
         thead{
           display: none;
         }
@@ -573,10 +623,11 @@ $light-gray:rgb(244, 245, 247);
           }
         }
           
-      }
+      } */
     th,td{
         padding:10px;
         text-align: center;
+        transition: 0.3s;
           
     }
     td:first-child,
@@ -597,6 +648,11 @@ th:last-child {
    tbody{
     tr
     {
+      &:hover{
+        td{
+          background-color: #f4f0f0;
+        }
+      }
       border-radius: 5px;
      // &:nth-child(even){
         // border-radius: 10px;
